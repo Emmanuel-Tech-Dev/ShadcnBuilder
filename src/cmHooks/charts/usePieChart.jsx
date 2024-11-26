@@ -66,22 +66,19 @@ const usePieChart = (
     };
     const [chartTextValues, setChartTextValues] = useState(defaultValue);
 
-    const newApiData = utils.addColorsToData(apiData, palates).map((item) => ({
-        ...item,
-        month: item.category, // Ensure 'month' key exists for chart functionality
-    }));
+    const newApiData = utils.addColorsToData(apiData, palates)
 
     console.log("API DATA :", newApiData);
 
     const keyMapping = {
-        labelKey: "category", // Key for labels
-        valueKeys: ["category"], // Keys for chart values
+        labelKey: "Visitor", // Key for labels
+        valueKeys: ["desktop"], // Keys for chart values
     };
 
     const chartConfig = utils.generateChartConfig(
         "PieChart",
         newApiData,
-        keyMapping
+        // keyMapping
     );
 
     console.log(chartConfig);
@@ -198,7 +195,7 @@ const usePieChart = (
                                                         y={viewBox.cy}
                                                         className="fill-foreground text-3xl font-bold"
                                                     >
-                                                        {value.toLocaleString()}
+                                                        {value?.toLocaleString()}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}

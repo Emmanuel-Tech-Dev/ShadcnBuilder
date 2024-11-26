@@ -83,7 +83,7 @@ function App() {
   const areaChart = useAreaChart()
   const barChart = useBarChart()
   const lineChart = useLineChart()
-  const pieChart = usePieChart(undefined, data, colorPalette)
+  const pieChart = usePieChart()
   const radialChart = useRadialChart()
 
 
@@ -207,11 +207,6 @@ function App() {
       )}
 
       {pieChart.PieChartJSX(
-        undefined,
-        "amount",
-        "category",
-        "category",
-        "Total",
 
       )}
 
