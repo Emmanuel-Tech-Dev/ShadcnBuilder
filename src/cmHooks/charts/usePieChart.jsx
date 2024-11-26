@@ -28,44 +28,87 @@ import {
 import utils from "@/helpers/utilites";
 import { TrendingUp } from "lucide-react";
 
-const desktopData = [
-    { month: "january", desktop: 186, fill: "var(--color-january)" },
-    { month: "february", desktop: 305, fill: "var(--color-february)" },
-    { month: "march", desktop: 237, fill: "var(--color-march)" },
-    { month: "april", desktop: 173, fill: "var(--color-april)" },
-    { month: "may", desktop: 209, fill: "var(--color-may)" },
+const colorPalette = [
+    "var(--color-january)",
+    "var(--color-february)",
+    "var(--color-march)",
+    "var(--color-april)",
+    "var(--color-may)",
+    "var(--color-june)",
+    "var(--color-july)",
+    "var(--color-august)",
+    "var(--color-september)",
+    "var(--color-october)",
+    "var(--color-november)",
+    "var(--color-december)",
 ];
 
-const usePieChart = (chartDesc = {}) => {
+const desktopData = [
+    { month: "january", desktop: 186 },
+    { month: "february", desktop: 305 },
+    { month: "march", desktop: 237 },
+    { month: "april", desktop: 173 },
+    { month: "may", desktop: 209 },
+    { month: "june", desktop: 209 },
+    { month: "july", desktop: 209 },
+    { month: "august", desktop: 209 },
+];
+
+const usePieChart = (
+    chartDesc = {},
+    apiData = desktopData,
+    palates = colorPalette
+) => {
     const defaultValue = {
         title: "Pie Chart - Interactive",
         description: "Showing total visitors for the last 3 months",
         ...chartDesc,
     };
-
     const [chartTextValues, setChartTextValues] = useState(defaultValue);
 
-    // const keyMapping = {
-    //     labelKey: "Visitors", // The key for labels
-    //     valueKeys: ["desktop", "mobile"], // The keys for pie chart values
-    //     // Icons (optional)
-    // };
+    const newApiData = utils.addColorsToData(apiData, palates).map((item) => ({
+        ...item,
+        month: item.category, // Ensure 'month' key exists for chart functionality
+    }));
 
-    const chartConfig = utils.generateChartConfig("PieChart", desktopData);
+    console.log("API DATA :", newApiData);
 
-    console.log(chartConfig)
+    const keyMapping = {
+        labelKey: "category", // Key for labels
+        valueKeys: ["category"], // Keys for chart values
+    };
 
+    const chartConfig = utils.generateChartConfig(
+        "PieChart",
+        newApiData,
+        keyMapping
+    );
 
-    const PieChartJSX = (data = desktopData) => {
+    console.log(chartConfig);
+
+    const PieChartJSX = (
+        data = newApiData,
+        dataKey = "desktop",
+        nameKey = "month",
+        targetKey = "month",
+        lableName = "Visitors"
+    ) => {
         const id = "pie-interactive";
-        const [activeMonth, setActiveMonth] = useState(data[0].month);
+        const [activeMonth, setActiveMonth] = useState(
+            data[0][Object.keys(data[0])[0]]
+        );
 
         const activeIndex = useMemo(
             () => data.findIndex((item) => item.month === activeMonth),
             [activeMonth]
         );
 
-        const months = useMemo(() => data.map((item) => item.month), []);
+        const targetData = useMemo(
+            () => [...new Set(data.map((item) => item[targetKey]))],
+            [data]
+        );
+
+        // console.log(targetData, activeMonth)
 
         return (
             <Card data-chart={id} className="flex flex-col">
@@ -83,27 +126,26 @@ const usePieChart = (chartDesc = {}) => {
                             <SelectValue placeholder="Select month" />
                         </SelectTrigger>
                         <SelectContent align="end" className="rounded-xl">
-                            {months.map((key) => {
-                                const config = chartConfig[key];
+                            {targetData.map((month) => {
+                                const tData = data.find((item) => item[targetKey] === month);
+                                if (!tData) return null;
 
-                                if (!config) {
-                                    return null;
-                                }
+
 
                                 return (
                                     <SelectItem
-                                        key={key}
-                                        value={key}
+                                        key={month}
+                                        value={month}
                                         className="rounded-lg [&_span]:flex"
                                     >
                                         <div className="flex items-center gap-2 text-xs">
                                             <span
                                                 className="flex h-3 w-3 shrink-0 rounded-sm"
                                                 style={{
-                                                    backgroundColor: chartConfig[key]?.color,
+                                                    backgroundColor: tData.fill,
                                                 }}
                                             />
-                                            {config?.label}
+                                            {tData.month}
                                         </div>
                                     </SelectItem>
                                 );
@@ -123,9 +165,9 @@ const usePieChart = (chartDesc = {}) => {
                                 content={<ChartTooltipContent hideLabel />}
                             />
                             <Pie
-                                data={desktopData}
-                                dataKey="desktop"
-                                nameKey="month"
+                                data={data}
+                                dataKey={dataKey}
+                                nameKey={nameKey}
                                 innerRadius={60}
                                 strokeWidth={5}
                                 activeIndex={activeIndex}
@@ -143,6 +185,7 @@ const usePieChart = (chartDesc = {}) => {
                                 <Label
                                     content={({ viewBox }) => {
                                         if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                            const value = data[activeIndex]?.[dataKey];
                                             return (
                                                 <text
                                                     x={viewBox.cx}
@@ -155,14 +198,14 @@ const usePieChart = (chartDesc = {}) => {
                                                         y={viewBox.cy}
                                                         className="fill-foreground text-3xl font-bold"
                                                     >
-                                                        {desktopData[activeIndex].desktop.toLocaleString()}
+                                                        {value.toLocaleString()}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={(viewBox.cy || 0) + 24}
                                                         className="fill-muted-foreground"
                                                     >
-                                                        Visitors
+                                                        {lableName}
                                                     </tspan>
                                                 </text>
                                             );
@@ -171,7 +214,7 @@ const usePieChart = (chartDesc = {}) => {
                                 />
                             </Pie>
                             <ChartLegend
-                                content={<ChartLegendContent nameKey="month" />}
+                                content={<ChartLegendContent nameKey={nameKey} />}
                                 className=" -translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
                             />
                         </PieChart>
@@ -188,7 +231,6 @@ const usePieChart = (chartDesc = {}) => {
             </Card>
         );
     };
-
 
     return { PieChartJSX, setChartTextValues };
 };

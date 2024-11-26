@@ -8,6 +8,7 @@
 * Data Display
 * Navigation Components
 * Date & Time Components
+* Charts
 * Installation
 * Usage Examples
   Form & Input Components
@@ -28,6 +29,8 @@
   Date & Time Components
 
 - Calendar Hook • Date selection • Range selection • Event handling • Custom formatting - Date Picker Hook • Calendar integration • Input formatting • Validation • Range selection - Time Picker Hook • Time selection • Format handling • Validation • Timezone support
+
+- Chart Hook • AreaChart • BarChart • PieChart • Line Graph
 
 ShadcnUI Custom Hooks Guide
 Overview

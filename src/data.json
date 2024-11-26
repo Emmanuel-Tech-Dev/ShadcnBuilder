@@ -1,0 +1,27 @@
+[
+  {
+    "category": "Rent",
+    "amount": 1200,
+    "month": "January"
+  },
+  {
+    "category": "Groceries",
+    "amount": 600,
+    "month": "February"
+  },
+  {
+    "category": "Entertainment",
+    "amount": 300,
+    "month": "March"
+  },
+  {
+    "category": "Utilities",
+    "amount": 400,
+    "month": "April"
+  },
+  {
+    "category": "Savings",
+    "amount": 500,
+    "month": "May"
+  }
+]

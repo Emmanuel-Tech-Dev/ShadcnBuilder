@@ -13,6 +13,8 @@ import useAreaChart from './cmHooks/charts/useAreaChart'
 import useBarChart from './cmHooks/charts/useBarChart'
 import useLineChart from './cmHooks/charts/useLineChart'
 import usePieChart from './cmHooks/charts/usePieChart'
+import useRadialChart from './cmHooks/charts/useRadialChart'
+import data from "./data.json"
 
 const links = [
   { key: "home", url: "https://example.com/home" },
@@ -28,6 +30,7 @@ const links = [
 ];
 
 
+console.log(data)
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -61,11 +64,27 @@ function App() {
   })
 
 
+  const colorPalette = [
+    "var(--color-rent)",
+    "var(--color-groceries)",
+    "var(--color-entertainment)",
+    "var(--color-utilities)",
+    "var(--color-savings)",
+    "var(--color-june)",
+    "var(--color-july)",
+    "var(--color-august)",
+    "var(--color-september)",
+    "var(--color-october)",
+    "var(--color-november)",
+    "var(--color-december)",
+  ];
+
 
   const areaChart = useAreaChart()
   const barChart = useBarChart()
   const lineChart = useLineChart()
-  const pieChart = usePieChart()
+  const pieChart = usePieChart(undefined, data, colorPalette)
+  const radialChart = useRadialChart()
 
 
   return (
@@ -187,8 +206,16 @@ function App() {
         undefined, undefined, undefined, undefined
       )}
 
-      {pieChart.PieChartJSX()}
+      {pieChart.PieChartJSX(
+        undefined,
+        "amount",
+        "category",
+        "category",
+        "Total",
 
+      )}
+
+      {radialChart.RadialChartJSX()}
 
     </>
   )

@@ -30,6 +30,7 @@ const utils = {
         if (chartType === "PieChart") {
             data.forEach((item, index) => {
                 const monthValue = item[labelKey]?.toLowerCase();
+                // console.log(monthValue)
                 if (monthValue) {
                     baseConfig[monthValue] = {
                         label: item[labelKey],
@@ -42,6 +43,12 @@ const utils = {
         return baseConfig;
     },
 
+    addColorsToData: (data, colorPalette) => {
+        return data.map((item, index) => ({
+            ...item,
+            fill: colorPalette[index % colorPalette.length], // Cycle through colors
+        }));
+    },
 
 
 }
