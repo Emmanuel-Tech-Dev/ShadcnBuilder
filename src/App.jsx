@@ -15,6 +15,9 @@ import useLineChart from './cmHooks/charts/useLineChart'
 import usePieChart from './cmHooks/charts/usePieChart'
 import useRadialChart from './cmHooks/charts/useRadialChart'
 import data from "./data.json"
+import useForms from './cmHooks/form/useForms'
+import { FormProvider } from 'react-hook-form'
+import { Form } from './components/ui/form'
 
 const links = [
   { key: "home", url: "https://example.com/home" },
@@ -50,6 +53,10 @@ function App() {
   const alertDialog = useAlertDialog()
 
 
+  // Call the useForms hook, specifying fields to be rendered
+
+
+
   const alert = useAlert({
     variant: "destructive",
     title: "Hello",
@@ -83,8 +90,52 @@ function App() {
   const areaChart = useAreaChart()
   const barChart = useBarChart()
   const lineChart = useLineChart()
-  const pieChart = usePieChart()
+  const pieChart = usePieChart(undefined, data, colorPalette)
   const radialChart = useRadialChart()
+
+
+
+  // Custom field configurations
+  const customFields = [
+    {
+      name: 'username',
+      label: 'Username',
+      type: 'text'
+    },
+    {
+      name: 'email',
+      label: 'Email',
+      type: 'email'
+    },
+    {
+      name: 'description',
+      label: 'Description',
+      type: 'textarea'
+    },
+    {
+      name: 'agreeTerms',
+      label: 'I agree to the terms',
+      type: 'checkbox'
+    },
+    {
+      name: 'country',
+      label: 'Country',
+      type: 'select',
+      options: [
+        { value: 'us', label: 'United States' },
+        { value: 'ca', label: 'Canada' },
+        { value: 'uk', label: 'United Kingdom' }
+      ]
+    }
+  ];
+
+  const { form, renderFields, handleSubmit } = useForms(customFields);
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
+
 
 
   return (
@@ -207,10 +258,24 @@ function App() {
       )}
 
       {pieChart.PieChartJSX(
+        undefined,
+        "amount",
+        "category",
+        "category",
+        "Total",
 
       )}
 
       {radialChart.RadialChartJSX()}
+
+
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-7">
+          {renderFields}
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+
 
     </>
   )

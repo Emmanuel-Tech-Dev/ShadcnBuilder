@@ -68,20 +68,21 @@ const usePieChart = (
 
     const newApiData = utils.addColorsToData(apiData, palates)
 
-    console.log("API DATA :", newApiData);
+    // console.log("API DATA :", newApiData);
 
     const keyMapping = {
-        labelKey: "Visitor", // Key for labels
-        valueKeys: ["desktop"], // Keys for chart values
+        labelKey: "category", // Default key for labels
+        valueKeys: ["category"], // Default keys for values
+
     };
 
     const chartConfig = utils.generateChartConfig(
         "PieChart",
         newApiData,
-        // keyMapping
+        keyMapping
     );
 
-    console.log(chartConfig);
+    // console.log(chartConfig);
 
     const PieChartJSX = (
         data = newApiData,
@@ -96,9 +97,11 @@ const usePieChart = (
         );
 
         const activeIndex = useMemo(
-            () => data.findIndex((item) => item.month === activeMonth),
+            () => data.findIndex((item) => item[nameKey] === activeMonth),
             [activeMonth]
         );
+
+        // console.log("active Index :", activeIndex)
 
         const targetData = useMemo(
             () => [...new Set(data.map((item) => item[targetKey]))],
@@ -126,7 +129,7 @@ const usePieChart = (
                             {targetData.map((month) => {
                                 const tData = data.find((item) => item[targetKey] === month);
                                 if (!tData) return null;
-
+                                // console.log("Selected Items :", tData)
 
 
                                 return (
@@ -142,7 +145,7 @@ const usePieChart = (
                                                     backgroundColor: tData.fill,
                                                 }}
                                             />
-                                            {tData.month}
+                                            {tData[targetKey]}
                                         </div>
                                     </SelectItem>
                                 );
